@@ -1,8 +1,8 @@
-using Settings;
+using _Settings;
 
-namespace Utils
+namespace _Utils
 {
-    public static class _Utils
+    public static class Utils
     {
         /// <summary>
         /// Randomizes the order of the characters in the provided string.
@@ -28,11 +28,11 @@ namespace Utils
             return temp.ToString();
         }
     }
+
     public static class ErrorMessages
     {
-        private static string invalidInput = "Invalid input";
-        private static string invalidPasswordLength = "Password length must be between 8 and 128 characters";
-        private static string selectionRequired = "Letters, numbers, or symbols must be selected";
+        private static string invalidInput = "\nInvalid input\n";
+        private static string invalidPasswordLength = "\nPassword length must be between 16 and 128 characters\n";
 
         /// <summary>
         /// Provides access to the invalidInput error message.
@@ -59,19 +59,6 @@ namespace Utils
         }
 
         /// <summary>
-        /// Provides access to the selectionRequired error message.
-        /// </summary>
-        /// <returns>"Letters, numbers, or symbols must be selected".</returns>
-        /// <remarks>This message is displayed when the user does not answer "Y/y"es to at least one of the password prompts.</remarks>
-        public static string SelectionRequired
-        {
-            get
-            {
-                return selectionRequired;
-            }
-        }
-
-        /// <summary>
         /// Prints the specified error message to the console.
         /// </summary>
         /// <param name="message">The error message to print.</param>
@@ -87,47 +74,12 @@ namespace Utils
 
     internal static class PromptMessages
     {
-        private static string confirm = "\n\nYes or No?\n";
-        private static string questionIntro = "\nWould you like to ";
-
-        /// <summary>
-        /// Displays a confirmation message to the user asking if they want to use letters in their password.
-        /// </summary>
-        public static void UseLetters()
-        {
-            Console.WriteLine(questionIntro + "use letters?" + confirm);
-        }
-
-        /// <summary>
-        /// Displays a confirmation message to the user asking if they want to use numbers in their password.
-        /// </summary>
-        public static void UseNumbers()
-        {
-            Console.WriteLine(questionIntro + "use numbers?" + confirm);
-        }
-
-        /// <summary>
-        /// Displays a confirmation message to the user asking if they want to use symbols in their password.
-        /// </summary>
-        public static void UseSymbols()
-        {
-            Console.WriteLine(questionIntro + "use symbols?" + confirm);
-        }
-
-        /// <summary>
-        /// Displays a confirmation message to the user asking if they want to use upper case letters in their password.
-        /// </summary>
-        public static void UseUpperCase()
-        {
-            Console.WriteLine(questionIntro + "use upper case letters?" + confirm);
-        }
-
         /// <summary>
         /// Displays a message to the user asking for the desired length of the new password.
         /// </summary>
         public static void PasswordLength()
         {
-            Console.WriteLine("How long would you like your password to be?\nPasswords must be between 8 and 128 characters.\n");
+            Console.WriteLine("How long would you like your password to be?\nPasswords must be between 16 and 128 characters.\n");
         }
     }
 
@@ -243,49 +195,6 @@ namespace Utils
         }
 
         /// <summary>
-        /// Prompts the user. Asks the user if they want to use letters in their password.
-        /// </summary>
-        /// <returns>true for yes and false for no.</returns>
-        public static bool PromptLetters()
-        {
-            PromptMessages.UseLetters();
-            string response = Validate.Response(Console.ReadLine());
-            return _IsTruthy(response);
-        }
-
-        /// <summary>
-        /// Prompts the user. Asks the user if they want to use numbers in their password.
-        /// </summary>
-        /// <returns>true for yes and false for no.</returns>
-        public static bool PromptNumbers()
-        {
-            PromptMessages.UseNumbers();
-            string response = Validate.Response(Console.ReadLine());
-            return _IsTruthy(response);
-        }
-        /// <summary>
-        /// Prompts the user. Asks the user if they want to use symbols in their password.
-        /// </summary>
-        /// <returns>true for yes and false for no.</returns>
-        public static bool PromptSymbols()
-        {
-            PromptMessages.UseSymbols();
-            string response = Validate.Response(Console.ReadLine());
-            return _IsTruthy(response);
-        }
-
-        /// <summary>
-        /// Prompts the user. Asks the user if they want to use upper case letters in their password.
-        /// </summary>
-        /// <returns>true for yes and false for no.</returns>
-        public static bool PromptUpperCase()
-        {
-            PromptMessages.UseUpperCase();
-            string response = Validate.Response(Console.ReadLine());
-            return _IsTruthy(response);
-        }
-
-        /// <summary>
         /// Prompts the user. Asks the user for the desired length of the new password.
         /// </summary>
         /// <returns>Length of the password to create as an integer</returns>
@@ -296,9 +205,9 @@ namespace Utils
             string? response = Console.ReadLine();
 
             bool validate(string? response)
-            {
-                bool isNumber = int.TryParse(response, out int number);
-                int passwordLength = isNumber ? int.Parse(response != null ? response : "-1") : -1;
+            {   
+                int passwordLength;
+                bool isNumber = int.TryParse(response, out passwordLength);
                 bool isValid = passwordLength >= settings.MinLength && passwordLength <= settings.MaxLength;
                 return isValid;
             }

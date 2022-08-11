@@ -1,23 +1,20 @@
-using Utils;
-using Settings;
+using _Utils;
+using _Settings;
+using _Security;
 
-namespace Generator
-
+namespace _Generator
 {
-    public class _Generator : PasswordSettings
+    public class Generator : PasswordSettings
     {
         private string password = "";
-        private string passwordChars = "";
-        private static string numberSet = "0123456789";
-        private static string symbolSet = "!@#$%^&*()_+-=[]{}|;':,./<>?";
-        private static string characterSet = "abcdefghijklmnopqrstuvwxyz";
+        private string characterPool = "";
 
         private int _passwordLength;
 
-        public _Generator()
+        public Generator()
         {
             password = "";
-            passwordChars = "";
+            characterPool = "";
             _passwordLength = -1;
         }
 
@@ -28,34 +25,11 @@ namespace Generator
         }
 
         /// <summary>
-        /// Checks to see if at least one character type is selected.
+        /// Prompts and validates user input for Password Length.
         /// </summary>
-        /// <returns>true if a password can be created, false otherwise</returns>
-        private bool CanGenerate()
-        {
-            // MAKE SURE WE CAN CREATE A PASSWORD WITH THE PROVIDED OPTIONS
-            if (!UseLetters && !UseNumbers && !UseSymbols && !UseUppercase)
-            {
-                ErrorMessages.Print(ErrorMessages.SelectionRequired);
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Prompts and validates user input for Password Length, and determines if the user
-        /// wants to use letters, uppercase, numbers, and/or symbols in their new password.
-        /// </summary>
-        private void PromptUserForPasswordRequirements()
+        private void PromptUserForPasswordLength()
         {
             PasswordLength = Input.PromptPasswordLength();
-            UseLetters = Input.PromptLetters();
-            UseUppercase = Input.PromptUpperCase();
-            UseNumbers = Input.PromptNumbers();
-            UseSymbols = Input.PromptSymbols();
         }
         private void GreetUser()
         {
@@ -65,44 +39,38 @@ namespace Generator
             Console.WriteLine();
         }
 
-        private string GeneratePassword()
+        public string GeneratePassword()
         {
             Random rnd = new Random();
-            int randomNumber = rnd.Next(0, characterSet.Length);
-            if (UseLetters)
+            string[] Sets = { characterSet, numberSet, symbolSet, characterSet.ToUpper() };
+            int numRandomRounds = 10;
+            int randomNumber;
+
+            foreach (string set in Sets)
             {
-                passwordChars += characterSet;
-                password += characterSet[rnd.Next(randomNumber, characterSet.Length)];
+                // add the set to the available characters
+                characterPool += set;
+                // add at least one of each character type to the password
+                password += set[rnd.Next(0, set.Length)];
             }
-            if (UseNumbers)
-            {
-                passwordChars += numberSet;
-                randomNumber = rnd.Next(0, numberSet.Length);
-                password += numberSet[randomNumber];
-            }
-            if (UseSymbols)
-            {
-                passwordChars += symbolSet;
-                randomNumber = rnd.Next(0, symbolSet.Length);
-                password += symbolSet[randomNumber];
-            }
-            if (UseUppercase)
-            {
-                passwordChars += characterSet.ToUpper();
-                randomNumber = rnd.Next(0, characterSet.Length);
-                password += characterSet.ToUpper()[randomNumber];
-            }
+
+            // randomize the characters in the string
+            characterPool = Utils.RandomizeString(characterPool);
 
             // continue building the password until we have the correct length
-            passwordChars = _Utils.RandomizeString(passwordChars);
-
             while (password.Length < PasswordLength)
             {
-                randomNumber = rnd.Next(0, passwordChars.Length);
-                password += passwordChars[randomNumber];
+                randomNumber = rnd.Next(0, characterPool.Length);
+                password += characterPool[randomNumber];
             }
 
-            return _Utils.RandomizeString(password);
+
+            for(int i = 0; i < numRandomRounds; i++)
+            {
+                password = Utils.RandomizeString(password);
+            }
+            
+            return Security.EnforceChecks(password);
         }
 
         /// <summary>
@@ -110,15 +78,9 @@ namespace Generator
         /// </summary>
         public void Run()
         {
-            bool ReadyToBuild = false;
-
             GreetUser();
 
-            while (!ReadyToBuild)
-            {
-                PromptUserForPasswordRequirements();
-                ReadyToBuild = CanGenerate();
-            }
+            PromptUserForPasswordLength();
 
             Console.WriteLine("\nYour new password is: {0}\n", GeneratePassword());
         }
@@ -128,9 +90,8 @@ namespace Generator
         /// </summary>
         public static void Init()
         {
-            _Generator PwdGenerator = new _Generator();
+            Generator PwdGenerator = new Generator();
             PwdGenerator.Run();
         }
     }
-
 }

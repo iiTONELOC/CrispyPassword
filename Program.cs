@@ -1,18 +1,27 @@
-using Generator;
-
-// TODO:
-// 		○ Passwords must contain at least eight alphanumeric characters.
-// 		○ Passwords must contain a combination of uppercase and lowercase letters and numbers.
-// 		○ Passwords must contain at least one special character within the first seven characters of the password.
-//      ○ Passwords must contain a nonnumeric letter or symbol in the first and last character positions.
+using _Generator;
 
 namespace PasswordGenerator
 {
     internal class Program
     {
         static void Main(string[] args)
-        {
-            _Generator.Init();
+        {   
+            int num;
+            string commandLineArgs = string.Join(',', args);
+            bool isNum = int.TryParse(commandLineArgs, out num);
+            
+
+            if (num>7 && num <129)
+            {
+                Generator PwdGenerator = new Generator();
+                PwdGenerator.PasswordLength = num;
+                Console.WriteLine("\nYour new password is: {0}\n",PwdGenerator.GeneratePassword());
+            }
+            else
+            {
+                Generator.Init();
+            }
+            
         }
     }
 }

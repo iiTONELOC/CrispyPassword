@@ -1,13 +1,17 @@
-namespace Settings
+namespace _Settings
 {
     public class PasswordSettings
     {
-        protected int _minLength = 8;
+        protected int _minLength = 16;
         protected int _maxLength = 128;
 
-        protected bool _useLetters = false;
-        protected bool _useNumbers = false;
-        protected bool _useSymbols = false;
+        protected static string numberSet = "0123456789";
+        protected static string symbolSet = "!@#$%^&*()_+-=[]{}|;':,./<>?";
+        protected static string characterSet = "abcdefghijklmnopqrstuvwxyz";
+
+        protected bool _useLetters = true;
+        protected bool _useNumbers = true;
+        protected bool _useSymbols = true;
         protected bool _useUppercase = false;
 
         public int MinLength
@@ -22,22 +26,18 @@ namespace Settings
         public bool UseLetters
         {
             get { return _useLetters; }
-            set { _useLetters = value; }
         }
         public bool UseNumbers
         {
             get { return _useNumbers; }
-            set { _useNumbers = value; }
         }
         public bool UseSymbols
         {
             get { return _useSymbols; }
-            set { _useSymbols = value; }
         }
         public bool UseUppercase
         {
             get { return _useUppercase; }
-            set { _useUppercase = value; }
         }
     }
 }
